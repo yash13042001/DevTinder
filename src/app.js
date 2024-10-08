@@ -5,16 +5,24 @@ const app = express();
 
 // Handling Code
 
-app.use("/hello", (req, res) => {
-  res.send("Hello Hello Hello!!!");
+// This will only handle GET call to /user
+app.get("/user", (req, res) => {
+  res.send({ firstName: "Yash", lastName: "Shukla" });
 });
 
+app.post("/user", (req, res) => {
+  // saving data to DB
+  res.send("Data successfully saved to database!");
+});
+
+app.delete("/user", (req, res) => {
+  // deleting data from DB
+  res.send("Deleted successfully!");
+});
+
+// this will match all the HTTP methods API calls to /test
 app.use("/test", (req, res) => {
   res.send("Hello from the server!");
-});
-
-app.use("/", (req, res) => {
-  res.send("Hello from the dashboard..");
 });
 
 // Listening on some port for getting incoming requests
