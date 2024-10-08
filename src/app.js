@@ -3,27 +3,29 @@ const express = require("express");
 // Creating an express instance / application of express / creating a server
 const app = express();
 
-// Handling Code
-
-// This will only handle GET call to /user
-app.get("/user", (req, res) => {
-  res.send({ firstName: "Yash", lastName: "Shukla" });
-});
-
-app.post("/user", (req, res) => {
-  // saving data to DB
-  res.send("Data successfully saved to database!");
-});
-
-app.delete("/user", (req, res) => {
-  // deleting data from DB
-  res.send("Deleted successfully!");
-});
-
-// this will match all the HTTP methods API calls to /test
-app.use("/test", (req, res) => {
-  res.send("Hello from the server!");
-});
+app.use(
+  "/user",
+  (req, res, next) => {
+    console.log("Handling the route user");
+    // res.send("Response!!");
+    next();
+  },
+  (req, res, next) => {
+    console.log("Handling the route user 2");
+    // res.send("Response 2!!");
+    next();
+  },
+  (req, res, next) => {
+    console.log("Handling the route user 3");
+    // res.send("Response 3!!");
+    next();
+  },
+  (req, res, next) => {
+    console.log("Handling the route user 4");
+    res.send("Response 4!!");
+    // next();
+  }
+);
 
 // Listening on some port for getting incoming requests
 app.listen(7777, () => {
