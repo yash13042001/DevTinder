@@ -3,27 +3,21 @@ const express = require("express");
 // Creating an express instance / application of express / creating a server
 const app = express();
 
-app.use(
+app.use("/", (req, res, next) => {
+  next();
+});
+
+app.get(
   "/user",
   (req, res, next) => {
     console.log("Handling the route user");
-    // res.send("Response!!");
     next();
   },
   (req, res, next) => {
-    console.log("Handling the route user 2");
-    // res.send("Response 2!!");
     next();
   },
   (req, res, next) => {
-    console.log("Handling the route user 3");
-    // res.send("Response 3!!");
-    next();
-  },
-  (req, res, next) => {
-    console.log("Handling the route user 4");
-    res.send("Response 4!!");
-    // next();
+    res.send("2 Route Handler");
   }
 );
 
