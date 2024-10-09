@@ -1,25 +1,26 @@
 const express = require("express");
+const { adminAuth, userAuth } = require("./middlewares/auth");
 
 // Creating an express instance / application of express / creating a server
 const app = express();
 
-app.use("/", (req, res, next) => {
-  next();
+app.use("/admin", adminAuth);
+
+app.post("/user/login", (req, res) => {
+  res.send("User Logged In Successfully");
 });
 
-app.get(
-  "/user",
-  (req, res, next) => {
-    console.log("Handling the route user");
-    next();
-  },
-  (req, res, next) => {
-    next();
-  },
-  (req, res, next) => {
-    res.send("2 Route Handler");
-  }
-);
+app.get("/user/data", userAuth, (req, res) => {
+  res.send("User Data Sent");
+});
+
+app.get("/admin/getAllData", (req, res) => {
+  res.send("All Data Sent");
+});
+
+app.get("/admin/deleteUser", (req, res) => {
+  res.send("Deltet a user");
+});
 
 // Listening on some port for getting incoming requests
 app.listen(7777, () => {
