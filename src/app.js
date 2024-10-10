@@ -78,11 +78,12 @@ app.patch("/user", async (req, res) => {
     // API with Options
     const user = await User.findByIdAndUpdate(userID, data, {
       returnDocument: "before",
+      runValidators: true,
     });
     console.log(user);
     res.send("User Updated Successfully");
   } catch (err) {
-    res.status(400).send("Something Went Wrong");
+    res.status(400).send("Update Failed:" + err.message);
   }
 });
 
