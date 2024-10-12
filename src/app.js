@@ -14,6 +14,12 @@ app.post("/signup", async (req, res) => {
   const user = new User(req.body);
 
   try {
+    if (data?.skills.length > 10) {
+      throw new Error("Skills cannot be More than 10");
+    }
+    if (data?.about.split(" ").length > 250) {
+      throw new Error("About cannot be More than 250 words");
+    }
     await user.save();
     res.send("User Added Successfully");
   } catch (err) {
@@ -70,12 +76,25 @@ app.delete("/user", async (req, res) => {
 });
 
 // Update data of the user
-app.patch("/user", async (req, res) => {
+app.patch("/user/:userId", async (req, res) => {
   const data = req.body;
-  const userID = req.body.userId;
+  const userID = req.params?.userId;
 
   try {
     // API with Options
+    const ALLOWED_UPDATES = ["photoUrl", "gender", "age", "about", "skills"];
+    const isUpdateAllowed = Object.keys(data).every((k) =>
+      ALLOWED_UPDATES.includes(k)
+    );
+    if (!isUpdateAllowed) {
+      throw new Error("Update Not Allowed");
+    }
+    if (data?.skills.length > 10) {
+      throw new Error("Skills cannot be More than 10");
+    }
+    if (data?.about.split(" ").length > 250) {
+      throw new Error("About cannot be More than 250 words");
+    }
     const user = await User.findByIdAndUpdate(userID, data, {
       returnDocument: "before",
       runValidators: true,
