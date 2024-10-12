@@ -1,4 +1,5 @@
-const { mongoose } = require("mongoose");
+const mongoose = require("mongoose");
+const validator = require("validator");
 
 const userSchema = new mongoose.Schema(
   {
@@ -19,10 +20,20 @@ const userSchema = new mongoose.Schema(
       required: true,
       unique: true,
       trim: true,
+      validate(value) {
+        if (!validator.isEmail(value)) {
+          throw new Error("Invalid Email Address : " + value);
+        }
+      },
     },
     password: {
       type: String,
       required: true,
+      validate(value) {
+        if (!validator.isStrongPassword(value)) {
+          throw new Error("Enter a strong password : " + value);
+        }
+      },
     },
     age: {
       type: Number,
@@ -40,6 +51,11 @@ const userSchema = new mongoose.Schema(
       type: String,
       default:
         "https://smsdelhibmw.co.in/wp-content/uploads/2022/02/User-Profile-PNG.png",
+      validate(value) {
+        if (!validator.isURL(value)) {
+          throw new Error("Invalid Photo URL : " + value);
+        }
+      },
     },
     about: {
       type: String,

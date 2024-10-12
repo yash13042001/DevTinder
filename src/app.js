@@ -11,13 +11,14 @@ app.use(express.json());
 app.post("/signup", async (req, res) => {
   // Creating new instance of User model
   // console.log(req.body);
-  const user = new User(req.body);
+  const data = req.body;
+  const user = new User(data);
 
   try {
-    if (data?.skills.length > 10) {
+    if (data?.skills?.length > 10) {
       throw new Error("Skills cannot be More than 10");
     }
-    if (data?.about.split(" ").length > 250) {
+    if (data?.about?.split(" ").length > 250) {
       throw new Error("About cannot be More than 250 words");
     }
     await user.save();
@@ -92,7 +93,7 @@ app.patch("/user/:userId", async (req, res) => {
     if (data?.skills.length > 10) {
       throw new Error("Skills cannot be More than 10");
     }
-    if (data?.about.split(" ").length > 250) {
+    if (data?.about?.split(" ").length > 250) {
       throw new Error("About cannot be More than 250 words");
     }
     const user = await User.findByIdAndUpdate(userID, data, {
