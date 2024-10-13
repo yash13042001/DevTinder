@@ -5,26 +5,35 @@ const connectDb = require("./config/database");
 const app = express();
 
 const User = require("./models/user");
+const { validateSignUpData } = require("./utils/validation");
+const bcrypt = require("bcrypt");
 
 app.use(express.json());
 
 app.post("/signup", async (req, res) => {
-  // Creating new instance of User model
-  // console.log(req.body);
-  const data = req.body;
-  const user = new User(data);
-
   try {
-    if (data?.skills?.length > 10) {
-      throw new Error("Skills cannot be More than 10");
-    }
-    if (data?.about?.split(" ").length > 250) {
-      throw new Error("About cannot be More than 250 words");
-    }
+    // Validation of Data
+
+    validateSignUpData(req);
+
+    const { firstName, lastName, emailId, password } = req.body;
+
+    // Encrypt the password
+    const passwordHash = await bcrypt.hash(password, 10);
+    // console.log(passwordHash);
+
+    // Creating new instance of User model
+    const user = new User({
+      firstName,
+      lastName,
+      emailId,
+      password: passwordHash,
+    });
+
     await user.save();
     res.send("User Added Successfully");
   } catch (err) {
-    res.status(400).send("Error saving the user" + err.message);
+    res.status(400).send("Error: " + err.message);
   }
 });
 
@@ -110,6 +119,7 @@ app.patch("/user/:userId", async (req, res) => {
 connectDb()
   .then(() => {
     console.log("Database Connection Establshed");
+    // Listening on some port for getting incoming requests
     app.listen(7777, () => {
       console.log("Server is successfully listening on port 7777...");
     });
@@ -117,5 +127,3 @@ connectDb()
   .catch((err) => {
     console.error("Database Connection Failed");
   });
-
-// Listening on some port for getting incoming requests
